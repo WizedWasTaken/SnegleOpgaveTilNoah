@@ -6,6 +6,13 @@
 export const snailMinSpeed = 15;
 export const snailMaxSpeed = 30;
 export const snailInterval = 0.2;
+export let CountdownTime = 3; // Sæt til 0 for at slå countdown fra
+export const countdownMinimumTime = 3;
+export const countdownMaximumTime = 10;
+
+export let dataContainerSettings = {
+  shown: false,
+};
 
 // Snegle
 export let snails = [

@@ -1,36 +1,47 @@
+// Settings
 import {
   snailMinSpeed,
   snailMaxSpeed,
   snailInterval,
   snails,
+  CountdownTime,
+  countdownMaximumTime,
+  countdownMinimumTime,
 } from './settings.js';
 
+// Data
+
+import { dataContainerSettings } from './settings.js';
+
 // Load Ræs når siden er loadet
-window.onload = LoadRace;
+window.onload = () => {
+  LoadRace();
+};
 
 // HTML elementer
 const startButton = document.querySelector('#startknap');
 const htmlFinishLine = document.querySelector('.finish');
+const racetrack = document.querySelector('#raceway');
+const countdown = document.querySelector('#countdown');
 
 // Variabler
 let winner = '';
 let finishLine;
-console.log(finishLine);
-
 // Data Variabler
 let globalAverageSpeed = 0; // Calculate average speed for all snails
 let globalAverageTimeLeft = 0; // Calculate average time left for all snails based on speed and distance left
 
 // Event Listeners
-startButton.addEventListener('click', LoadRace);
+startButton.addEventListener('click', StartRace);
 
 // Funktioner
 
 function LoadRace() {
+  htmlFinishLine.style.height = snails.length * 100 + 50 + 'px'; // Sæt højden på målstregen baseret på antal snegle
+
   // Hent snegle
-  let racetrack = document.querySelector('#raceway');
   let snailList = '';
-  startButton.disabled = true;
+  startButton.disabled = false;
 
   // Vis snegle
   for (let i = 0; i < snails.length; i++) {
@@ -40,13 +51,23 @@ function LoadRace() {
     }px;" name="${snails[i].name}">
       <h3 class="snail-text">${snails[i].name}</h3>
         <img src="../../Snegle/${snails[i].image}" alt="${snails[i].name}">
-      </div>`;
+      </div>`; // Vi bruger en template string for at indsætte variabler i HTML (Også kendt som string interpolation)
+    // Vi bruger også en attribute til at gemme sneglens navn, så vi kan bruge det til at melde vinderen
   }
 
   racetrack.innerHTML = snailList;
+}
 
-  // Start Ræs
-  StartRace();
+function ResetRace() {
+  startButton.disabled = false;
+  countdown.style.display = 'none';
+  winner = '';
+  finishLine = htmlFinishLine.offsetLeft - 150; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
+  snails.forEach((snail, i) => {
+    document.querySelector(`#snail${snails[i].id}`).style.left = '0px';
+  });
+  RemoveAttributesFromSnail();
+  AddAttributesToSnail();
 }
 
 /*
@@ -62,6 +83,7 @@ function ConfigureRace() {
     document.querySelector(`#snail${snails[i].id}`).style.left = '0px';
   }
 
+  RemoveAttributesFromSnail();
   AddAttributesToSnail();
 
   winner = '';
@@ -86,7 +108,21 @@ function AddAttributesToSnail() {
     snail.averageSpeed = 0;
     snail.topSpeed = 0;
     snail.minSpeed = 0;
-    console.log(snail);
+  });
+}
+
+/*
+ * Fjern attributter fra snegle
+ * Fjern attributter fra snegle for at rydde op efter ræset
+ * @return void
+ */
+function RemoveAttributesFromSnail() {
+  snails.forEach((snail) => {
+    delete snail.finished;
+    delete snail.distance;
+    delete snail.averageSpeed;
+    delete snail.topSpeed;
+    delete snail.minSpeed;
   });
 }
 
@@ -95,10 +131,53 @@ function AddAttributesToSnail() {
  * Start ræset ved at flytte snegle
  * @return void
  */
-function StartRace() {
+async function StartRace() {
+  ResetRace();
+  startButton.disabled = true;
   ConfigureRace();
-
+  // Hvis nedtællingstiden er sat, start en nedtælling
+  if (CountdownTime > 0) {
+    let tempCountdown = CountdownTime;
+    if (tempCountdown < countdownMinimumTime) {
+      tempCountdown = countdownMinimumTime;
+    }
+    if (tempCountdown > countdownMaximumTime) {
+      tempCountdown = countdownMaximumTime;
+    }
+    await Countdown(tempCountdown);
+  }
   MoveSnail();
+}
+
+/*
+ * Nedtælling
+ * Start en nedtælling før ræset starter
+ * @param {number} count - Antal sekunder nedtællingen skal vare
+ * @return {Promise} - Promise der resolver når nedtællingen er færdig
+ */
+function Countdown(count) {
+  // Reset nedtælling
+  countdown.style.display = 'flex';
+  // Fjern vigtig tekst fra nedtælling
+  countdown.classList.remove('important-text');
+  countdown.innerHTML = count;
+  return new Promise((resolve) => {
+    let interval = setInterval(() => {
+      if (count === 0) {
+        console.log('GO!');
+        countdown.innerHTML = 'GO!';
+        countdown.classList.add('important-text');
+        setTimeout(() => {
+          clearInterval(interval);
+          resolve();
+          countdown.style.display = 'none';
+        }, 1500);
+      } else {
+        countdown.innerHTML = count;
+        count--;
+      }
+    }, 1000);
+  });
 }
 
 /*
@@ -107,41 +186,63 @@ function StartRace() {
  * @return void
  */
 function MoveSnail() {
-  let snailElements = document.querySelectorAll('.snail');
-  let snailFinished = false; // Boolean til at stoppe ræset hvis en snegl er færdig
+  let snailElements = Array.from(document.querySelectorAll('.snail'));
+  let snailFinished = false; // Boolean for at holde styr på om en snegl er færdig
 
-  snailElements.forEach((snailElement) => {
-    console.dir(snailElement);
-    let position = 0;
+  let interval = setInterval(() => {
+    // Tilfældiggør rækkefølgen af snegle
+    snailElements.sort(() => Math.random() - 0.5);
 
-    let interval = setInterval(() => {
+    snailElements.forEach((snailElement) => {
       if (snailFinished) {
-        // Hvis en snegl kom over målstregen, stop ræset
+        // Hvis en snegl er færdig, stop ræset
         clearInterval(interval);
         return;
       }
-      position +=
-        Math.floor(Math.random() * (snailMaxSpeed - snailMinSpeed + 1)) +
-        snailMinSpeed;
-      snailElement.style.left = `${position}px`;
 
-      if (position >= finishLine) {
-        // Hvis sneglen er færdig, stop ræset
+      // 50% chance for at sneglen skal flytte sig
+      if (Math.random() > 0.5) {
+        let position = parseInt(snailElement.style.left) || 0;
+        position +=
+          Math.floor(Math.random() * (snailMaxSpeed - snailMinSpeed + 1)) +
+          snailMinSpeed;
+        snailElement.style.left = `${position}px`;
+      }
+
+      if (parseInt(snailElement.style.left) >= finishLine) {
+        // Hvis en snegl krydser målstregen, stop ræset
         clearInterval(interval);
         snailFinished = true;
-        snailElement.addEventListener('transitionend', () => {
-          DeclareWinner(snailElement.attributes.name.value); // Vi gemmer sneglens navn i en attribute i HTML elementet, så vi kan hente det her og bruge det til at melde vinderen
-        });
+        console.log('Snail finished: ', snailElement.attributes.name.value);
+
+        // Lav en event listener for at vente på at transitionen er færdig
+        let transitionEndHandler = () => {
+          console.log('Transition ended: ', snailElement.attributes.name.value);
+          DeclareWinner(snailElement.attributes.name.value); // Vis vinder
+          snailElement.removeEventListener(
+            'transitionend',
+            transitionEndHandler
+          ); // Fjern event listener for at undgå at kalde funktionen flere gange
+        };
+
+        snailElement.addEventListener('transitionend', transitionEndHandler);
       }
-    }, snailInterval * 1000);
-  });
+    });
+  }, snailInterval * 1000);
 }
 
-// DeclareWinner('snail1');
+/*
+ * DeclareWinner
+ * Vis en alert med vinderen af ræset
+ * @param {string} snail - Navn på snegl der vandt
+ * @return void
+ */
 function DeclareWinner(snail) {
-  console.log(snail);
-  let winner = snails.find((s) => s.name === snail);
-  console.log(winner);
-  alert(`Vinderen er ${winner.name}!`);
-  startButton.disabled = false;
+  console.log('Vinderen er: ', snail);
+  winner = snails.find((s) => s.name === snail); // Find snegl baseret på navn, for at få alt data om sneglen
+  alert(`Vinderen er ${winner.name}!`); // Vis vinderen i en alert
+  ResetRace(); // Reset ræset
 }
+
+// TODO: Implementer en funktion til at beregne gennemsnitshastighed og gennemsnitstid tilbage
+// TODO: Tilføj data analysering til ræset
