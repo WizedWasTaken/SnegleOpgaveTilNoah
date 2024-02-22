@@ -1,41 +1,66 @@
-/* Styling af væddeløbet */
+/* Body */
 body {
   background-color: #32ad32;
   margin: 0px;
   padding: 0px;
+  height: calc(100vh - 400px);
+  width: 100vw;
 }
+
+/* Container for finish line, snegle osv. (overflow) */
 #wrapper {
-  width: 900px;
-  height: 140px;
+  width: 90%;
+  max-width: 900px;
+  height: 100%;
   margin: 100px auto;
   position: relative;
 }
+
+/* Top af siden */
 #top {
   width: 100%;
   height: 200px;
-  background-image: url("../../grass2.jpg");
+  background-image: url('../../grass2.jpg');
   background-repeat: repeat-x;
 }
 
+/* Snegl */
 .snail {
   width: 100px;
   height: 100px;
-  background-image: url("../../snail.png");
+  background-image: url('../../snail.png');
   background-repeat: no-repeat;
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 100;
+  transition: left 0.2s linear; /* Gør at sneglen bevæger sig flydende */
 }
 
+.snail-text {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  font-size: 20px;
+  color: white;
+  z-index: 200;
+}
+
+/* Ræser banen for snegle. (Overflow) */
 #raceway {
-  width: 900px;
+  width: 90%;
+  max-width: 900px;
   height: 280px;
   margin: 100px auto;
   position: relative;
   background-color: #32ad32;
 }
 
+/* Container til snegle */
 .snegle-container {
   width: 160px;
   height: 103px;
@@ -43,6 +68,8 @@ body {
   z-index: 100;
   background-repeat: no-repeat;
 }
+
+/* Start Knap */
 .startknap {
   width: 100px;
   height: 30px;
@@ -53,20 +80,81 @@ body {
   line-height: 30px;
   position: absolute;
   top: 60px;
-  left: 380px;
+  left: 50%;
+  transform: translateX(-50%);
   cursor: pointer;
+  border: none;
+  opacity: 1;
+  transition: opacity 0.3s;
 }
 
 .startknap:hover {
   background-color: #fa4e4e;
 }
 
+.startknap:disabled {
+  opacity: 0;
+}
+
+/* Finish Line */
 .finish {
   width: 160px;
-  height: 280px;
+  height: 100%;
   border-left: 2px dotted White;
   position: absolute;
   top: 0px;
-  left: 840px;
+  left: calc(90% - 40px);
   z-index: 50;
+}
+
+/* Media query for screens smaller than 600px */
+@media only screen and (max-width: 600px) {
+  .snail {
+    width: 50px;
+    height: 50px;
+  }
+
+  .snegle-container {
+    width: 80px;
+    height: 51.5px;
+  }
+
+  .startknap {
+    width: 50px;
+    height: 15px;
+    line-height: 15px;
+    top: 30px;
+  }
+
+  .finish {
+    width: 80px;
+    height: 140px;
+    left: calc(90% - 80px);
+  }
+}
+
+/* Media query for screens smaller than 900px */
+@media only screen and (max-width: 900px) {
+  .snail {
+    width: 75px;
+    height: 75px;
+  }
+
+  .snegle-container {
+    width: 120px;
+    height: 77.25px;
+  }
+
+  .startknap {
+    width: 75px;
+    height: 22.5px;
+    line-height: 22.5px;
+    top: 45px;
+  }
+
+  .finish {
+    width: 120px;
+    height: 210px;
+    left: calc(90% - 120px);
+  }
 }
