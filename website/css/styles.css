@@ -1,0 +1,72 @@
+/* Styling af væddeløbet */
+body {
+  background-color: #32ad32;
+  margin: 0px;
+  padding: 0px;
+}
+#wrapper {
+  width: 900px;
+  height: 140px;
+  margin: 100px auto;
+  position: relative;
+}
+#top {
+  width: 100%;
+  height: 200px;
+  background-image: url("../../grass2.jpg");
+  background-repeat: repeat-x;
+}
+
+.snail {
+  width: 100px;
+  height: 100px;
+  background-image: url("../../snail.png");
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+}
+
+#raceway {
+  width: 900px;
+  height: 280px;
+  margin: 100px auto;
+  position: relative;
+  background-color: #32ad32;
+}
+
+.snegle-container {
+  width: 160px;
+  height: 103px;
+  position: absolute;
+  z-index: 100;
+  background-repeat: no-repeat;
+}
+.startknap {
+  width: 100px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #f00;
+  color: white;
+  text-align: center;
+  line-height: 30px;
+  position: absolute;
+  top: 60px;
+  left: 380px;
+  cursor: pointer;
+}
+
+.startknap:hover {
+  background-color: #fa4e4e;
+}
+
+.finish {
+  width: 160px;
+  height: 280px;
+  border-left: 2px dotted White;
+  position: absolute;
+  top: 0px;
+  left: 840px;
+  z-index: 50;
+}
