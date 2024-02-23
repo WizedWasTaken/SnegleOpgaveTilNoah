@@ -3,10 +3,14 @@
  * Alt kan ændres i UI, default værdier på opstart konfigureres her.
  */
 
+// Snail Speed
 export const snailMinSpeed = 15;
 export const snailMaxSpeed = 30;
 export const snailInterval = 0.2;
-export let CountdownTime = 3; // Sæt til 0 for at slå countdown fra
+
+// Countdown
+export let CountdownTime = 5; // Sæt til 0 for at slå countdown fra
+export const countdownSound = '321fight.ogg';
 export const countdownMinimumTime = 3;
 export const countdownMaximumTime = 10;
 

@@ -7,6 +7,11 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>Snegle Ræs</title>
+    <!-- Import af fontawesome -->
+    <script
+      src="https://kit.fontawesome.com/4ebd3f36b5.js"
+      crossorigin="anonymous"
+    ></script>
     <link
       rel="stylesheet"
       href="./css/styles.css"
@@ -18,10 +23,50 @@
     ></script>
   </head>
   <body>
+    <!-- Modal -->
+    <!-- Nyt dialog element -->
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog -->
+    <dialog id="settings-modal" >
+      <form id="settings-form">
+        <h2>Indstillinger</h2>
+        <div class="form-group">
+          <label for="snail-count"
+            >Antal snegle</label
+          >
+          <input
+            type="number"
+            id="snail-count"
+            name="snail-count"
+            min="1"
+            max="10"
+            value="5"
+          />
+        </div>
+        <div class="form-group">
+          <label for="snail-speed"
+            >Snegle hastighed</label
+          >
+          <input
+            type="number"
+            id="snail-speed"
+            name="snail-speed"
+            min="1"
+            max="10"
+            value="5"
+          />
+          <button type="submit" id="settings-close">Bekræft</button>
+    </dialog>
     <div id="top">
-      <div class="data-container info-container">
-        <h2>Data</h2>
-        <ul id="data-container-list"></ul>
+      <span
+        id="settings"
+        class="settings"
+        ><i class="fa-solid fa-gear"></i
+      ></span>
+      <div class="data-wrapper">
+        <div class="data-container info-container">
+          <h2>Data</h2>
+          <ul id="data-container-list"></ul>
+        </div>
       </div>
     </div>
     <div id="wrapper">

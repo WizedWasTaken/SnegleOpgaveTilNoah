@@ -110,6 +110,87 @@ body {
   flex-direction: column;
 }
 
+/* Settings Icon & Modal */
+#settings {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  color: brown;
+}
+
+#settings i {
+  font-size: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  cursor: pointer;
+}
+
+/* Settings Modal */
+
+#settings-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 10px;
+  z-index: 1500;
+  margin: 0;
+}
+
+#settings-modal h2 {
+  text-align: center;
+  margin: 0;
+  padding: 10px 0;
+  border-bottom: 3px solid black;
+  margin-bottom: 10px;
+}
+
+#settings-modal button {
+  width: 100px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #f00;
+  color: white;
+  text-align: center;
+  line-height: 30px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  border: none;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+#settings-modal button:hover {
+  background-color: #fa4e4e;
+}
+
+#settings-modal button:disabled {
+  opacity: 0;
+}
+
+#settings-modal input {
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 5px;
+  margin: 10px 0;
+}
+
+#settings-modal input[type='number'] {
+  width: 50px;
+}
+
 /* Ræser banen for snegle. (Overflow) */
 #raceway {
   width: 90%;
