@@ -2,83 +2,44 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snegle Ræs</title>
     <!-- Import af fontawesome -->
     <script
       src="https://kit.fontawesome.com/4ebd3f36b5.js"
       crossorigin="anonymous"
     ></script>
-    <link
-      rel="stylesheet"
-      href="./css/styles.css"
-    />
-    <script
-      type="module"
-      src="./js/race.js"
-      defer
-    ></script>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script type="module" src="./js/race.js" defer></script>
   </head>
   <body>
     <!-- Modal -->
     <!-- Nyt dialog element -->
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog -->
-    <dialog id="settings-modal" >
-      <form id="settings-form">
+    <dialog id="settings-modal">
+      <div id="settings-wrapper">
         <h2>Indstillinger</h2>
-        <div class="form-group">
-          <label for="snail-count"
-            >Antal snegle</label
-          >
-          <input
-            type="number"
-            id="snail-count"
-            name="snail-count"
-            min="1"
-            max="10"
-            value="5"
-          />
-        </div>
-        <div class="form-group">
-          <label for="snail-speed"
-            >Snegle hastighed</label
-          >
-          <input
-            type="number"
-            id="snail-speed"
-            name="snail-speed"
-            min="1"
-            max="10"
-            value="5"
-          />
-          <button type="submit" id="settings-close">Bekræft</button>
+        <form id="settings-form">
+          <div class="form-group"></div>
+          <div class="form-group">
+            <div class="snails">
+              <!-- INPUT SNEGLE HER -->
+            </div>
+          </div>
+        </form>
+        <button type="submit" id="settings-close">Bekræft</button>
+      </div>
     </dialog>
     <div id="top">
-      <span
-        id="settings"
-        class="settings"
+      <span id="settings" class="settings"
         ><i class="fa-solid fa-gear"></i
       ></span>
-      <div class="data-wrapper">
-        <div class="data-container info-container">
-          <h2>Data</h2>
-          <ul id="data-container-list"></ul>
-        </div>
-      </div>
     </div>
     <div id="wrapper">
       <div class="finish"></div>
       <div id="countdown"></div>
       <div id="raceway"></div>
-      <button
-        class="startknap"
-        id="startknap"
-      >
-        Start
-      </button>
+      <button class="startknap" id="startknap">Start</button>
     </div>
   </body>
 </html>

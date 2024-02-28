@@ -19,7 +19,7 @@ body {
 #top {
   width: 100%;
   height: 200px;
-  background-image: url('../../grass2.jpg');
+  background-image: url("../../grass2.jpg");
   background-repeat: repeat-x;
 }
 
@@ -27,7 +27,7 @@ body {
 .snail {
   width: 100px;
   height: 100px;
-  background-image: url('../../snail.png');
+  background-image: url("../../snail.png");
   background-repeat: no-repeat;
   position: absolute;
   top: 0px;
@@ -47,6 +47,10 @@ body {
   font-size: 20px;
   color: white;
   z-index: 200;
+}
+
+.snail-settings {
+  display: flex;
 }
 
 /* Countdown */
@@ -136,7 +140,6 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 300px;
-  height: 300px;
   background-color: white;
   border: 3px solid black;
   border-radius: 10px;
@@ -152,18 +155,22 @@ body {
   margin-bottom: 10px;
 }
 
+#settings-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
 #settings-modal button {
   width: 100px;
   height: 30px;
   border-radius: 15px;
   background-color: #f00;
   color: white;
+  margin: 0 auto;
   text-align: center;
   line-height: 30px;
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 5%;
   cursor: pointer;
   border: none;
   opacity: 1;
@@ -187,7 +194,7 @@ body {
   margin: 10px 0;
 }
 
-#settings-modal input[type='number'] {
+#settings-modal input[type="number"] {
   width: 50px;
 }
 

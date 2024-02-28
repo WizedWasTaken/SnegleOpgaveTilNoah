@@ -8,31 +8,27 @@ import {
   countdownMaximumTime,
   countdownMinimumTime,
   countdownSound,
-} from './settings.js';
-
-// Load Ræs når siden er loadet
-window.onload = () => {
-  LoadRace();
-};
+} from "./settings.js";
 
 // HTML elementer
-const startButton = document.querySelector('#startknap');
-const htmlFinishLine = document.querySelector('.finish');
-const racetrack = document.querySelector('#raceway');
-const countdown = document.querySelector('#countdown');
+const startButton = document.querySelector("#startknap");
+const htmlFinishLine = document.querySelector(".finish");
+const racetrack = document.querySelector("#raceway");
+const countdown = document.querySelector("#countdown");
 
 // indstillinger
-const settings = document.querySelector('#settings i');
-const settingsContainer = document.querySelector('#settings');
-const settingsModal = document.querySelector('#settings-modal');
-const settingsClose = document.querySelector('#settings-close');
+const settings = document.querySelector("#settings i");
+const settingsContainer = document.querySelector("#settings");
+const settingsModal = document.querySelector("#settings-modal");
+const settingsForm = document.querySelector("#settings-form");
+const settingsClose = document.querySelector("#settings-close");
 
 // Countdown Variabler
 var countdownAudio = new Audio(`./sounds/${countdownSound}`); // Lyd til nedtælling
-var music = new Audio('./sounds/music.ogg'); // Baggrundsmusik
+var music = new Audio("./sounds/music.ogg"); // Baggrundsmusik
 
 // Variabler
-let winner = '';
+let winner = "";
 let finishLine;
 
 // Data Variabler
@@ -40,17 +36,22 @@ let globalAverageSpeed = 0; // Calculate average speed for all snails
 let globalAverageTimeLeft = 0; // Calculate average time left for all snails based on speed and distance left
 
 // Event Listeners
-startButton.addEventListener('click', StartRace);
+startButton.addEventListener("click", StartRace);
+
+// Load Ræs når siden er loadet
+window.onload = () => {
+  LoadRace();
+};
 
 // Indstillinger
-settingsContainer.addEventListener('click', () => {
-  console.log('Settings clicked');
+settingsContainer.addEventListener("click", () => {
+  console.log("Settings clicked");
 
   settingsModal.showModal();
   loadModalSettings();
 });
 
-settingsClose.addEventListener('click', (e) => {
+settingsClose.addEventListener("click", (e) => {
   e.preventDefault();
   settingsModal.close();
 });
@@ -64,9 +65,58 @@ settingsClose.addEventListener('click', (e) => {
  * @throws Error - Hvis funktionen ikke er implementeret
  */
 
+let activeSnails = snails.filter((s) => s.active === true);
+
 function loadModalSettings() {
-  // TODO: Load alle settings fra settings.js ind i modalen i korrekte input felt.
-  throw new Error('Not implemented');
+  settingsForm.innerHTML = "";
+  // Tag alle snegle
+  // put dem ind i divs, put en checkbox, snegle png og input felt med navn.
+  // Gør det et krav at der er 2 tændte snegle
+  // Gør det muligt at ændre navnet på sneglene.
+
+  snails.forEach((snail, i) => {
+    let snailDiv = document.createElement("div");
+    snailDiv.classList.add("snail-settings");
+
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = `snail${snail.id}`;
+    checkbox.checked = true;
+    checkbox.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        snail.active = true;
+      } else {
+        if (activeSnails.length > 2) {
+          snail.active = false;
+        } else {
+          e.target.checked = true;
+        }
+      }
+      activeSnails = snails.filter((s) => s.active === true);
+    });
+
+    let img = document.createElement("img");
+    img.src = `../../Snegle/${snail.image}`;
+    img.alt = snail.name;
+
+    let input = document.createElement("input");
+    input.type = "text";
+    input.value = snail.name;
+    input.addEventListener("input", (e) => {
+      snail.name = e.target.value;
+
+      let snailElement = document.querySelector(`#snail${snail.id}`);
+      let snailElementText = document.querySelector(`#snail${snail.id} h3`);
+      snailElementText.innerText = snail.name;
+      snailElement.setAttribute("name", snail.name);
+    });
+
+    snailDiv.appendChild(checkbox);
+    snailDiv.appendChild(img);
+    snailDiv.appendChild(input);
+
+    settingsForm.appendChild(snailDiv);
+  });
 }
 
 /*
@@ -75,10 +125,10 @@ function loadModalSettings() {
  * @return void
  */
 function LoadRace() {
-  htmlFinishLine.style.height = snails.length * 100 + 50 + 'px'; // Sæt højden på målstregen baseret på antal snegle
+  htmlFinishLine.style.height = snails.length * 100 + 50 + "px"; // Sæt højden på målstregen baseret på antal snegle
 
   // Hent snegle
-  let snailList = '';
+  let snailList = "";
   startButton.disabled = false;
 
   // Vis snegle
@@ -105,11 +155,11 @@ function ResetRace() {
   music.currentTime = 0;
   countdownAudio.currentTime = 0;
   startButton.disabled = false;
-  countdown.style.display = 'none';
-  winner = '';
+  countdown.style.display = "none";
+  winner = "";
   finishLine = htmlFinishLine.offsetLeft - 150; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
   snails.forEach((snail, i) => {
-    document.querySelector(`#snail${snails[i].id}`).style.left = '0px';
+    document.querySelector(`#snail${snails[i].id}`).style.left = "0px";
   });
   RemoveAttributesFromSnail();
   AddAttributesToSnail();
@@ -124,14 +174,15 @@ function ResetRace() {
 function ConfigureRace() {
   // Reset snegle
   for (let i = 0; i < snails.length; i++) {
-    document.querySelector(`#snail${snails[i].id}`).style.left = '0px';
+    document.querySelector(`#snail${snails[i].id}`).style.left = "0px";
   }
 
   RemoveAttributesFromSnail();
   AddAttributesToSnail();
 
-  winner = '';
+  winner = "";
   finishLine = htmlFinishLine.offsetLeft - 150; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
+  console.log("Finish line: ", finishLine);
 
   // Opret config
   snails.forEach((snail, i) => {
@@ -201,9 +252,9 @@ async function StartRace() {
  */
 function Countdown(count) {
   // Reset nedtælling
-  countdown.style.display = 'flex';
+  countdown.style.display = "flex";
   // Fjern vigtig tekst fra nedtælling
-  countdown.classList.remove('important-text');
+  countdown.classList.remove("important-text");
   countdown.innerHTML = count;
 
   return new Promise((resolve) => {
@@ -212,14 +263,14 @@ function Countdown(count) {
         countdownAudio.play();
       }
       if (count === 0) {
-        countdown.innerHTML = 'Fight!';
-        countdown.classList.add('important-text');
+        countdown.innerHTML = "Fight!";
+        countdown.classList.add("important-text");
         setTimeout(() => {
           countdownAudio.pause();
 
           clearInterval(interval);
           resolve();
-          countdown.style.display = 'none';
+          countdown.style.display = "none";
         }, 2000);
       } else {
         countdown.innerHTML = count;
@@ -235,7 +286,7 @@ function Countdown(count) {
  * @return void
  */
 function MoveSnail() {
-  let snailElements = Array.from(document.querySelectorAll('.snail'));
+  let snailElements = Array.from(document.querySelectorAll(".snail"));
   let snailFinished = false; // Boolean for at holde styr på om en snegl er færdig
   music.play(); // Start baggrundsmusik
 
@@ -250,6 +301,9 @@ function MoveSnail() {
         return;
       }
 
+      if (snailElement.active) {
+        console.log("Snail is active: ", snailElement.attributes.name.value);
+      }
       // 50% chance for at sneglen skal flytte sig
       if (Math.random() > 0.5) {
         let position = parseInt(snailElement.style.left) || 0;
@@ -263,19 +317,19 @@ function MoveSnail() {
         // Hvis en snegl krydser målstregen, stop ræset
         clearInterval(interval);
         snailFinished = true;
-        console.log('Snail finished: ', snailElement.attributes.name.value);
+        console.log("Snail finished: ", snailElement.attributes.name.value);
 
         // Lav en event listener for at vente på at transitionen er færdig
         let transitionEndHandler = () => {
-          console.log('Transition ended: ', snailElement.attributes.name.value);
+          console.log("Transition ended: ", snailElement.attributes.name.value);
           DeclareWinner(snailElement.attributes.name.value); // Vis vinder
           snailElement.removeEventListener(
-            'transitionend',
+            "transitionend",
             transitionEndHandler
           ); // Fjern event listener for at undgå at kalde funktionen flere gange
         };
 
-        snailElement.addEventListener('transitionend', transitionEndHandler);
+        snailElement.addEventListener("transitionend", transitionEndHandler);
       }
     });
   }, snailInterval * 1000);
@@ -288,13 +342,10 @@ function MoveSnail() {
  * @return void
  */
 function DeclareWinner(snail) {
-  console.log('Vinderen er: ', snail);
+  console.log("Vinderen er: ", snail);
   winner = snails.find((s) => s.name === snail); // Find snegl baseret på navn, for at få alt data om sneglen
   alert(`Vinderen er ${winner.name}!`); // Vis vinderen i en alert
   // TODO: ^^ Skift til at vise vinderen i UI med sound effect, konfetti osv.
   music.pause(); // Stop baggrundsmusik
   ResetRace(); // Reset ræset
 }
-
-// TODO: Implementer en funktion til at beregne gennemsnitshastighed og gennemsnitstid tilbage
-// TODO: Tilføj data analysering til ræset
