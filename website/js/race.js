@@ -31,10 +31,6 @@ var music = new Audio("./sounds/music.ogg"); // Baggrundsmusik
 let winner = "";
 let finishLine;
 
-// Data Variabler
-let globalAverageSpeed = 0; // Calculate average speed for all snails
-let globalAverageTimeLeft = 0; // Calculate average time left for all snails based on speed and distance left
-
 // Event Listeners
 startButton.addEventListener("click", StartRace);
 
@@ -81,18 +77,19 @@ function loadModalSettings() {
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.id = `snail${snail.id}`;
-    checkbox.checked = true;
+    checkbox.checked = snail.active;
+    let snailhtml = document.querySelector(`#snail${snail.id}`);
+    snailhtml.setAttribute("active", snail.active);
+
     checkbox.addEventListener("change", (e) => {
-      if (e.target.checked) {
-        snail.active = true;
-      } else {
-        if (activeSnails.length > 2) {
-          snail.active = false;
-        } else {
-          e.target.checked = true;
-        }
-      }
+      snail.active = e.target.checked;
+      snailhtml.setAttribute("active", snail.active);
       activeSnails = snails.filter((s) => s.active === true);
+      if (activeSnails.length < 2) {
+        e.target.checked = true;
+        snail.active = true;
+        snailhtml.setAttribute("active", snail.active);
+      }
     });
 
     let img = document.createElement("img");
@@ -109,6 +106,7 @@ function loadModalSettings() {
       let snailElementText = document.querySelector(`#snail${snail.id} h3`);
       snailElementText.innerText = snail.name;
       snailElement.setAttribute("name", snail.name);
+      snailElement.setAttribute("active", snail.active);
     });
 
     snailDiv.appendChild(checkbox);
@@ -286,30 +284,25 @@ function Countdown(count) {
  * @return void
  */
 function MoveSnail() {
+  settings.disabled = true; // Deaktiver indstillinger knap
   let snailElements = Array.from(document.querySelectorAll(".snail"));
-  let snailFinished = false; // Boolean for at holde styr på om en snegl er færdig
   music.play(); // Start baggrundsmusik
 
   let interval = setInterval(() => {
     // Tilfældiggør rækkefølgen af snegle
     snailElements.sort(() => Math.random() - 0.5);
 
-    snailElements.forEach((snailElement) => {
-      if (snailFinished) {
-        // Hvis en snegl er færdig, stop ræset
-        clearInterval(interval);
-        return;
-      }
-
-      if (snailElement.active) {
-        console.log("Snail is active: ", snailElement.attributes.name.value);
-      }
+    snailElements.forEach((snailElement, i) => {
       // 50% chance for at sneglen skal flytte sig
       if (Math.random() > 0.5) {
         let position = parseInt(snailElement.style.left) || 0;
         position +=
           Math.floor(Math.random() * (snailMaxSpeed - snailMinSpeed + 1)) +
           snailMinSpeed;
+        if (snailElement.attributes.active.value === "false") {
+          console.log("Snail is inactive");
+          position = 0;
+        }
         snailElement.style.left = `${position}px`;
       }
 
@@ -342,6 +335,7 @@ function MoveSnail() {
  * @return void
  */
 function DeclareWinner(snail) {
+  settings.disabled = false; // Aktiver indstillinger knap
   console.log("Vinderen er: ", snail);
   winner = snails.find((s) => s.name === snail); // Find snegl baseret på navn, for at få alt data om sneglen
   alert(`Vinderen er ${winner.name}!`); // Vis vinderen i en alert
