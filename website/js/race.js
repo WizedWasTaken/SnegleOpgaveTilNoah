@@ -132,7 +132,7 @@ function LoadRace() {
   // Vis snegle
   for (let i = 0; i < snails.length; i++) {
     snailList += `
-      <div class="snail" id="snail${snails[i].id}" style="top:${
+      <div class="snail" id="snail${snails[i].id}" active="true" style="top:${
       i * 100
     }px;" name="${snails[i].name}">
       <h3 class="snail-text">${snails[i].name}</h3>
@@ -155,9 +155,9 @@ function ResetRace() {
   startButton.disabled = false;
   countdown.style.display = "none";
   winner = "";
-  finishLine = htmlFinishLine.offsetLeft - 150; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
+  finishLine = htmlFinishLine.offsetLeft - 450; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
   snails.forEach((snail, i) => {
-    document.querySelector(`#snail${snails[i].id}`).style.left = "0px";
+    document.querySelector(`#snail${i + 1}`).style.left = "0px";
   });
   RemoveAttributesFromSnail();
   AddAttributesToSnail();
@@ -179,7 +179,7 @@ function ConfigureRace() {
   AddAttributesToSnail();
 
   winner = "";
-  finishLine = htmlFinishLine.offsetLeft - 150; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
+  finishLine = htmlFinishLine.offsetLeft - 450; // -150 fordi snegle er 150px brede, og den når halvt over målstregen ellers
   console.log("Finish line: ", finishLine);
 
   // Opret config
@@ -284,6 +284,7 @@ function Countdown(count) {
  * @return void
  */
 function MoveSnail() {
+  let snailFinished = false;
   settings.disabled = true; // Deaktiver indstillinger knap
   let snailElements = Array.from(document.querySelectorAll(".snail"));
   music.play(); // Start baggrundsmusik
